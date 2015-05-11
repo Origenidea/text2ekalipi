@@ -96,15 +96,10 @@ while 1:
     if len(wordlist) == 0:
         continue
 
-    word2cmu(
-    for word in wordlist:
-        cmu = word2cmu(word)
+    # This is the reference set
+    ek_real = wordlist[1]
 
-        # This means that we couldn't find
-        # this word in the CMU dict.
-        if type(cmu) is str:
-            print word + " " + str(cmu)
+    # This is our generated set
+    ek_test = word2ek(wordlist[0]) 
 
-        else:
-            ek = cmu2ek(cmu)
-            print ''.join(ek)
+    print ek_test + " " + ek_real
