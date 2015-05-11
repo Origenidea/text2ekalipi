@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import re
 import sys
-import csv
 
 cmu_map = {}
 ek_map = {}
