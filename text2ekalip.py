@@ -7,6 +7,9 @@ import csv
 cmu_map = {}
 ek_map = {}
 
+right = []
+wrong = []
+
 def loadek():
     ek_file = open("ref/cmu_ekal.txt", 'rb')
 
@@ -81,6 +84,7 @@ def transline(line):
 loadcmu()
 loadek()
 
+total = 0
 for line in sys.stdin:
 
     wordlist = re.split(r'\s+', line)
@@ -96,7 +100,24 @@ for line in sys.stdin:
     # This is the reference set
     ek_real = wordlist[1]
 
+    word = wordlist[0]
     # This is our generated set
-    ek_test = word2ek(wordlist[0]) 
+    ek_test = word2ek(word)
+    cmu_test = ' '.join(word2cmu(word))
 
-    print ek_test + " " + ek_real
+    if ek_test == ek_real:
+        right.append([word, cmu_test, ek_real, ek_test])
+    else:
+        wrong.append([word, cmu_test, ek_real, ek_test])
+
+    total += 1
+
+print "Results: " + str( 100 * len(right) / total) + "% correct"
+print "Wrong List:"
+
+for line in wrong:
+    print "\t".join(line)
+
+print "\n\n\nRight List:"
+for line in right:
+    print "\t".join(line)
