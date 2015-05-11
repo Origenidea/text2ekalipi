@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import re
 import sys
 import csv
@@ -63,7 +64,7 @@ def transline(line):
     # If this results in a blank line,
     # then we just loop again
     if len(wordlist) == 0:
-        continue
+        return False
 
     for word in wordlist:
         cmu = word2cmu(word)
@@ -80,20 +81,16 @@ def transline(line):
 loadcmu()
 loadek()
 
-while 1:
-    line = sys.stdin.readline()
+for line in sys.stdin:
 
-    # remove numerics.
-    line = re.sub(r'[\d_]+', '', line)
-
-    wordlist = re.split(r'[^\w]+', line)
+    wordlist = re.split(r'\s+', line)
 
     # remove the empty strings
     wordlist = filter(None, wordlist)
 
     # If this results in a blank line,
     # then we just loop again
-    if len(wordlist) == 0:
+    if len(wordlist) < 2:
         continue
 
     # This is the reference set
