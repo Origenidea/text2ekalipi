@@ -11,10 +11,10 @@ def loadcmu():
         words = re.split(r'\s+', line);
         cmu_map[words[0]] = words[1:-1]
 
-def cmu2ek(word):
-    return word
+def cmu2ek(cmu):
+    return cmu 
 
-def word2ek(word):
+def word2cmu(word):
     # The CMU dict is all uppercase so we need that first
     word = word.upper()
 
@@ -29,9 +29,9 @@ while 1:
     line = sys.stdin.readline()
 
     # remove numerics.
-    line = re.sub(r'\d+', '', line)
+    line = re.sub(r'[\d_]+', '', line)
 
-    wordlist = re.split(r'[^\w\d]+', line)
+    wordlist = re.split(r'[^\w]+', line)
 
     # remove the empty strings
     wordlist = filter(None, wordlist)
@@ -41,12 +41,14 @@ while 1:
     if len(wordlist) == 0:
         continue
 
-    print str(wordlist)
-
     for word in wordlist:
-        cmu = word2ek(word)
+        cmu = word2cmu(word)
 
-        if(len(cmu) == 0):
-            cmu = word
+        # This means that we couldn't find
+        # this word in the CMU dict.
+        if type(cmu) is str:
+            print word + " " + str(cmu)
 
-        print word + " " + str(cmu)
+        else:
+            ek = cmu2ek(cmu)
+            print ek
