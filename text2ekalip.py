@@ -4,6 +4,15 @@ import sys
 import csv
 
 cmu_map = {}
+ek_map = {}
+
+def loadek():
+    ek_file = open("ref/cmu_ekal.txt", 'rb')
+
+    for line in ek_file:
+        words = re.split(r'\s+', line);
+        ek_map[words[0]] = words[1]
+
 def loadcmu():
     cmu_file = open("ref/cmudict_SPHINX_40", 'rb')
 
@@ -24,6 +33,7 @@ def word2cmu(word):
         return word
 
 loadcmu()
+loadek()
 
 while 1:
     line = sys.stdin.readline()
