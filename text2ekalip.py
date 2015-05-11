@@ -21,7 +21,15 @@ def loadcmu():
         cmu_map[words[0]] = words[1:-1]
 
 def cmu2ek(cmu):
-    return cmu 
+    ek = []
+
+    for pho in cmu:
+        if pho in ek_map:
+            ek.append(ek_map[pho])
+        else:
+            ek.append("MISSING")
+
+    return ek
 
 def word2cmu(word):
     # The CMU dict is all uppercase so we need that first
