@@ -69,4 +69,4 @@ while 1:
 
         else:
             ek = cmu2ek(cmu)
-            print ek
+            print ''.join(ek)
