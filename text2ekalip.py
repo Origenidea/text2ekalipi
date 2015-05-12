@@ -107,7 +107,7 @@ for line in sys.stdin:
     if ek_test == ek_real:
         right.append([word, cmu_test, ek_real, ek_test])
     else:
-        wrong.append([word, cmu_test, ek_real, ek_test])
+        wrong.append([word, ek_real, ek_test, cmu_test])
 
     total += 1
 
