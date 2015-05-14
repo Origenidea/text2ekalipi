@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 import xml.etree.ElementTree as etree
 import re
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 prefix = '{http://www.mediawiki.org/xml/export-0.10/}'
 pr_re = re.compile('{{IPA\|.?([^|\/]*).+lang=en}}', re.M | re.U)
@@ -27,13 +30,13 @@ for event, elem in etree.iterparse('./ref/enwiktionary.xml', events=('start', 'e
         elem.clear()
 
     elif event == 'end' and elem.tag == prefix + 'page':
-        if flag == 1 and text != None and title != False:
-            res = getpronounce(text.encode('utf-8'))
+        if flag == 1 and text != None and title != None:
+            res = getpronounce(text)
             if res != None:
-                print title,res
+                print title.decode('utf-8') + ',' + res.decode('utf-8')
             #print title,text.encode('utf-8')
         flag = 0
-        title = False
-        text = False
+        title = None
+        text = None
 
 #print event, elem
