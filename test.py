@@ -14,8 +14,9 @@ gc.enable()
 
 # This is the pronounciation regex
 pr_re = re.compile('{IPA\|.?([^|\/]*).+lang=([\-\w]+)}', re.M | re.U)
-# A number of words have this thing reversed
-pr_re_reversed = re.compile('{IPA\|lang=([\-\w]+)|.?([^|\/]*)}', re.M | re.U)
+
+# A number of words have this thing reversed -- "anyone can edit" ...
+pr_re_reversed = re.compile('{IPA\|lang=([\-\w]+).{1,2}([^|\/]*)[\|}]', re.M | re.U)
 
 flag = False 
 text = None
@@ -47,6 +48,14 @@ for event, elem in etree.iterparse(xmlfile, events=('end',)):
     elif elem.tag == tag_text and flag and title:
         res = pr_re.search(elem.text)
 
+        if res:
+            matches = res.groups()
+            
+        if not res:
+            res = pr_re_reversed.search(elem.text)
+            if res:
+                matches = reversed(res.groups())     
+
         if res: 
 
             ## This is a word match, keep track of it.
@@ -55,7 +64,7 @@ for event, elem in etree.iterparse(xmlfile, events=('end',)):
                 now = time.time()
                 sys.stderr.write(str(ix) + " " + str( ix / (1000 * (now - start)) ) + "\n")
 
-            print title.decode('utf-8') + ',' + (','.join(res.groups())).decode('utf-8')
+            print title.decode('utf-8') + ',' + (','.join(matches)).decode('utf-8')
         
         else:
             sys.stderr.write( elem.text )
