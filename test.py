@@ -1,4 +1,4 @@
-#!/usr/bin/python -O
+#!/usr/bin/python -OO
 # -*- coding: utf-8 -*-
 import lxml.etree as etree
 import time
@@ -23,44 +23,33 @@ ix = 0
 start = time.time()
 xmlfile = './ref/enwiktionary.xml'
 
+for event, elem in etree.iterparse(xmlfile, events=('end',)):
+    if elem.tag == tag_title:
+        title = elem.text
+    elif elem.tag == tag_ns and elem.text == '0':
+        flag = True
+    elif elem.tag == tag_text and flag:
+        text = elem.text
+    elif elem.tag == tag_page:
+        if flag and text and title:
+            ix += 1
+            if ix % 10000 == 0:
+                now = time.time()
+                sys.stderr.write(str( ix / (1000 * (now - start)) ) + "\n")
 
-for event, elem in etree.iterparse(xmlfile, events=('start', 'end')):
-    ix += 1
-    if ix % 100000 == 0:
-        gc.collect()
-        now = time.time()
-        sys.stderr.write(str( ix / (now - start) ) + "\n")
+            res = pr_re.search(text)
+            if res: 
+                print title.decode('utf-8') + ',' + (','.join(res.groups())).decode('utf-8')
+            """
+            else:
+                sys.stderr.write( text )
+            """
 
-    if event == 'start':
-        if elem.tag == tag_title:
-            title = elem.text
-        elif elem.tag == tag_ns and elem.text == '0':
-            flag = True
-        elif elem.tag == tag_text and flag:
-            text = elem.text
-        elem.clear()
+        flag = False
+        title = None
+        text = None
 
-    elif event == 'end':
-        if elem.tag == tag_page:
-            if flag and text and title:
-                res = pr_re.search(text)
-                if res: 
-                    print title.decode('utf-8') + ',' + ','.join(res.groups()).decode('utf-8')
-                """
-                else:
-                    sys.stderr.write( text )
-                """
+    elem.clear()
 
-            flag = False
-            title = None
-            text = None
-        elem.clear()
-
-        while elem.getprevious() is not None:
-             del elem.getparent()[0]
-    """
-    for ancestor in elem.xpath('ancestor-or-self::*'):
-        while ancestor.getprevious() is not None:
-            del ancestor.getparent()[0]
-    """
-
+    while elem.getprevious() is not None:
+         del elem.getparent()[0]
