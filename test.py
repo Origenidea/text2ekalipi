@@ -23,24 +23,33 @@ ix = 0
 start = time.time()
 xmlfile = './ref/enwiktionary.xml'
 
-class TitleTarget(object):
-    def __init__(self):
-        self.text = []
-    def start(self, tag, attrib):
-        self.is_title = True if tag == 'Title' else False
-    def end(self, tag):
-        pass
-    def data(self, data):
-        if self.is_title:
-            self.text.append(data.encode('utf-8'))
-    def close(self):
-        return self.text
 
-parser = etree.XMLParser(target = TitleTarget())
-etree.parse(infile, xmlfile)  
+"""
+def fast_iter(context, func, *args, **kwargs):
+    http://lxml.de/parsing.html#modifying-the-tree
+    Based on Liza Daly's fast_iter
+    http://www.ibm.com/developerworks/xml/library/x-hiperfparse/
+    See also http://effbot.org/zone/element-iterparse.htm
+    for event, elem in context:
+        func(elem, *args, **kwargs)
+        # It's safe to call clear() here because no descendants will be
+        # accessed
+        elem.clear()
+        # Also eliminate now-empty references from the root node to elem
+        for ancestor in elem.xpath('ancestor-or-self::*'):
+            while ancestor.getprevious() is not None:
+                del ancestor.getparent()[0]
+    del context
 
 
-for event, elem in etree.iterparse(xmlfile, events=('start', 'end', 'start-ns', 'end-ns')):
+def process_element(elem):
+    print elem.xpath( 'description/text( )' )
+
+context = etree.iterparse( xmlfile, tag='' )
+fast_iter(context,process_element)
+"""
+
+for event, elem in etree.iterparse(xmlfile, events=('start', 'end')):
     ix += 1
     if ix % 100000 == 0:
         gc.collect()
@@ -66,10 +75,10 @@ for event, elem in etree.iterparse(xmlfile, events=('start', 'end', 'start-ns', 
             flag = False
             title = None
             text = None
-    elem.clear()
+        elem.clear()
 
-    while elem.getprevious() is not None:
-         del elem.getparent()[0]
+        while elem.getprevious() is not None:
+             del elem.getparent()[0]
     """
     for ancestor in elem.xpath('ancestor-or-self::*'):
         while ancestor.getprevious() is not None:
