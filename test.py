@@ -13,13 +13,12 @@ sys.setdefaultencoding('utf-8')
 gc.enable()
 
 # This is the pronounciation regex
-pr_re = re.compile('{IPA\|.?([^|\/]*).+lang=([\-\w]+)}', re.M | re.U)
+pr_re = re.compile('{IPA\s*\|\s*.?([^|\/]*).+lang=\s*([\-\w]+)\s*}', re.M | re.U)
 
 # A number of words have this thing reversed -- "anyone can edit" ...
-pr_re_reversed = re.compile('{IPA\|lang=([\-\w]+).{1,2}([^|\/]*)[\|}]', re.M | re.U)
+pr_re_reversed = re.compile('{IPA\|\s*lang=([\-\w]+).{1,2}([^\]|\/]*)[\]\|}]', re.M | re.U)
 
 flag = False 
-text = None
 
 # Apparently you can't tell lxml to ignore namespaces so we 
 # construct things here.
@@ -45,13 +44,13 @@ for event, elem in etree.iterparse(xmlfile, events=('end',), tag=None, attribute
     ## This is the text from the article ... we can process
     ## it here because we have guarantees on its serialized
     ## reading
-    elif elem.tag == tag_text and flag and title:
+    elif elem.tag == tag_text and flag and elem.text:
         res = pr_re.search(elem.text)
 
         if res:
             matches = res.groups()
             
-        if not res:
+        else:
             res = pr_re_reversed.search(elem.text)
             if res:
                 matches = reversed(res.groups())     
@@ -60,9 +59,9 @@ for event, elem in etree.iterparse(xmlfile, events=('end',), tag=None, attribute
 
             ## This is a word match, keep track of it.
             ix += 1
-            if ix % 1000 == 0:
+            if ix % 10000 == 0:
                 now = time.time()
-                sys.stderr.write(str(ix) + " " + str( ix / (1000 * (now - start)) ) + "\n")
+                sys.stderr.write(str(ix) + " " + str( ix / (10 * (now - start)) ) + "\n")
 
             print title.decode('utf-8') + ',' + (','.join(matches)).decode('utf-8')
         
@@ -73,12 +72,6 @@ for event, elem in etree.iterparse(xmlfile, events=('end',), tag=None, attribute
     ## Reset all the flags and variables after each page.
     elif elem.tag == tag_page:
         flag = False
-
-        if title:
-            del title
-
-        if text:
-            del text
 
     ## and delete the elements to maintain a flat memory
     elem.clear()
