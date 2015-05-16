@@ -10,7 +10,7 @@ sys.setdefaultencoding('utf-8')
 gc.enable()
 
 prefix = '{http://www.mediawiki.org/xml/export-0.10/}'
-pr_re = re.compile('{{IPA\|.?([^|\/]*).+lang=en}}', re.M | re.U)
+pr_re = re.compile('{{IPA\|.?([^|\/]*).+lang=(..)}}', re.M | re.U)
 
 flag = False 
 text = None
@@ -23,31 +23,6 @@ ix = 0
 start = time.time()
 xmlfile = './ref/enwiktionary.xml'
 
-
-"""
-def fast_iter(context, func, *args, **kwargs):
-    http://lxml.de/parsing.html#modifying-the-tree
-    Based on Liza Daly's fast_iter
-    http://www.ibm.com/developerworks/xml/library/x-hiperfparse/
-    See also http://effbot.org/zone/element-iterparse.htm
-    for event, elem in context:
-        func(elem, *args, **kwargs)
-        # It's safe to call clear() here because no descendants will be
-        # accessed
-        elem.clear()
-        # Also eliminate now-empty references from the root node to elem
-        for ancestor in elem.xpath('ancestor-or-self::*'):
-            while ancestor.getprevious() is not None:
-                del ancestor.getparent()[0]
-    del context
-
-
-def process_element(elem):
-    print elem.xpath( 'description/text( )' )
-
-context = etree.iterparse( xmlfile, tag='' )
-fast_iter(context,process_element)
-"""
 
 for event, elem in etree.iterparse(xmlfile, events=('start', 'end')):
     ix += 1
@@ -70,7 +45,11 @@ for event, elem in etree.iterparse(xmlfile, events=('start', 'end')):
             if flag and text and title:
                 res = pr_re.search(text)
                 if res: 
-                    print title.decode('utf-8') + ',' + res.group(1).decode('utf-8')
+                    print title.decode('utf-8') + ',' + ','.join(res.groups()).decode('utf-8')
+                """
+                else:
+                    sys.stderr.write( text )
+                """
 
             flag = False
             title = None
