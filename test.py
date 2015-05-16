@@ -32,7 +32,7 @@ ix = 0
 start = time.time()
 xmlfile = './ref/enwiktionary.xml'
 
-for event, elem in etree.iterparse(xmlfile, events=('end',)):
+for event, elem in etree.iterparse(xmlfile, events=('end',), tag=None, attribute_defaults=False, dtd_validation=False, load_dtd=False, no_network=True, remove_blank_text=False, remove_comments=False, remove_pis=False, encoding=None, html=False, recover=None, huge_tree=True):
 
     ## Get the title of the document (which we may just be ignoring)
     if elem.tag == tag_title:
@@ -66,8 +66,8 @@ for event, elem in etree.iterparse(xmlfile, events=('end',)):
 
             print title.decode('utf-8') + ',' + (','.join(matches)).decode('utf-8')
         
-        else:
-            sys.stderr.write( elem.text )
+        #else:
+        #    sys.stderr.write( elem.text )
        
 
     ## Reset all the flags and variables after each page.
