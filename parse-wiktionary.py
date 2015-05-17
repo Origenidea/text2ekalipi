@@ -13,10 +13,10 @@ sys.setdefaultencoding('utf-8')
 gc.enable()
 
 # This is the pronounciation regex
-pr_re = re.compile('{IPA\s*\|\s*.?([^|\/]*).+lang=\s*([\-\w]+)\s*}', re.M | re.U)
+pr_re = re.compile('{IPA\s*\|\s*.?([^|\/\]]+).+lang=\s*([\-\w]+)', re.M | re.U)
 
 # A number of words have this thing reversed -- "anyone can edit" ...
-pr_re_reversed = re.compile('{IPA\|\s*lang=([\-\w]+).{1,2}([^}\]|\/]*)[\]\|}]', re.M | re.U)
+pr_re_reversed = re.compile('{IPA\|\s*lang=([\-\w]+)\s*\|\s*[\[\/]?([^}\]\|\/]+)', re.M | re.U)
 
 # Apparently you can't tell lxml to ignore namespaces so we 
 # construct things here.
