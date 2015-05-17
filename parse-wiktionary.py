@@ -6,39 +6,43 @@ import gc
 import re
 import sys
 
+gc.enable()
+
 # According to the internet, utf-8 is kinda odd, so we have
 # to do a bunch of acrobatics to get it working.
 reload(sys)
 sys.setdefaultencoding('utf-8')
-gc.enable()
 
 # This is the pronounciation regex
-pr_re = re.compile('{IPA\s*\|\s*-?.?([^|\/\]]+).+lang=\s*([\-\w]+)')
+pr_re = re.compile(r'{IPA\s*\|\s*-?.?([^|\/\]]+).+lang=\s*([\-\w]+)')
 
 # A number of words have this thing reversed -- "anyone can edit" ...
-pr_re_reversed = re.compile('{IPA\|\s*lang=([\-\w]+)\s*\|\s*[\[\/]?([^}\]\|\/]+)')
+pr_re_reversed = re.compile(r'{IPA\|\s*lang=([\-\w]+)\s*\|\s*[\[\/]?([^}\]\|\/]+)')
 
-# Apparently you can't tell lxml to ignore namespaces so we 
-# construct things here.
+# We keep track of how many words we have seen versus how many there are.
 ix = 0
 total = 0
+
+# And how long it takes
 start = time.time()
+
+# This is a symlink.
 xmlfile = './ref/enwiktionary.xml'
 
-for event, elem in etree.iterparse(xmlfile, events=('end',), tag=None, strip_cdata=False, remove_blank_text=True, remove_comments=True, remove_pis=True, encoding='utf-8', huge_tree=True):
+for event, elem in etree.iterparse(xmlfile, events=('end',), strip_cdata=False, remove_blank_text=True, remove_comments=True, remove_pis=True, encoding='utf-8', huge_tree=True):
 
-    ## Get the title of the document (which we may just be ignoring)
+    # Get the title of the document (which we may just be ignoring)
     if elem.tag == '{http://www.mediawiki.org/xml/export-0.10/}title':
         title = elem.text
 
-    ## This checks to see if it's an article about a word
+    # This checks to see if it's an article about a word
     elif elem.tag == '{http://www.mediawiki.org/xml/export-0.10/}ns':
         total += 1
         flag = (elem.text == '0')
 
-    ## This is the text from the article ... we can process
-    ## it here because we have guarantees on its serialized
-    ## reading
+    # This is the text from the article ... we can process
+    # it here because we have guarantees on its serialized
+    # reading
     elif elem.tag == '{http://www.mediawiki.org/xml/export-0.10/}text' and flag and elem.text:
         res = pr_re.search(elem.text)
 
@@ -52,7 +56,7 @@ for event, elem in etree.iterparse(xmlfile, events=('end',), tag=None, strip_cda
 
         if res: 
 
-            ## This is a word match, keep track of it.
+            # This is a word match, keep track of it.
             ix += 1
             if ix % 10000 == 0:
                 now = time.time()
@@ -60,13 +64,14 @@ for event, elem in etree.iterparse(xmlfile, events=('end',), tag=None, strip_cda
 
             print title + ',' + (','.join(matches))
         
+        # This debugging provides for checking if a regex is off
         #else:
         #    sys.stderr.write( elem.text )
        
 
-    ## Delete the elements to maintain a flat memory --
-    ## Without this the memory usage balloons to the multi-gig
-    ## range
+    # Delete the elements to maintain a flat memory --
+    # Without this the memory usage balloons to the multi-gig
+    # range
     if elem.getprevious() is not None:
        del elem.getparent()[0]
 
