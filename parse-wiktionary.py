@@ -70,4 +70,4 @@ for event, elem in etree.iterparse(xmlfile, events=('end',), tag=None, strip_cda
     if elem.getprevious() is not None:
        del elem.getparent()[0]
 
-sys.stderr.write(str(ix) + " pronunciations found out of " + str(total) + " documents in " + str((time.time() - start)) + " seconds.")
+sys.stderr.write(str(ix) + " pronunciations found out of " + str(total) + " documents in " + str((time.time() - start)) + " seconds.\n")
