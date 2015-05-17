@@ -39,7 +39,7 @@ for event, elem in etree.iterparse(xmlfile, events=('end',), tag=None, strip_cda
     ## This is the text from the article ... we can process
     ## it here because we have guarantees on its serialized
     ## reading
-    elif elem.tag == '{http://www.mediawiki.org/xml/export-0.10/}text' and flag:
+    elif elem.tag == '{http://www.mediawiki.org/xml/export-0.10/}text' and flag and elem.text:
         res = pr_re.search(elem.text)
 
         if res:
