@@ -11,6 +11,7 @@ def parse_file(csv_file = 'ref/ipa_kb.csv'):
 
     mapper = {}
     first = True
+
     for row in csv.reader(csv_handle, encoding='utf-8'):
         if not first:
             ipa, en, de = row[0], row[1], row[6]
