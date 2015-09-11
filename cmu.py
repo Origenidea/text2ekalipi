@@ -2,19 +2,13 @@
 # -*- coding: utf-8 -*-
 import re
 import sys
+import ek
 
 cmu_map = {}
 ek_map = {}
 
 right = []
 wrong = []
-
-def loadek():
-    ek_file = open("ref/cmu_ekal.txt", 'rb')
-
-    for line in ek_file:
-        words = re.split(r'\s+', line);
-        ek_map[words[0]] = words[1]
 
 def loadcmu():
     cmu_file = open("ref/cmudict_SPHINX_40", 'rb')
@@ -81,7 +75,7 @@ def transline(line):
             print ''.join(ek)
 
 loadcmu()
-loadek()
+ek_map = ek.load()
 
 total = 0
 for line in sys.stdin:
