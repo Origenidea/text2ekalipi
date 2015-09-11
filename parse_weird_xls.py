@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 import unicodecsv as csv
 import sys
-import gc
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-gc.enable()
 
 def parse_file(csv_file = 'ref/ipa_kb.csv'):
     csv_handle = open(csv_file, 'rb')
