@@ -17,6 +17,7 @@ def load(do_insert=False):
     global eka_map
 
     if do_insert:
+        print "Loading wiki into redis. Wait a few hours..."
         load_wik_table()
     
     eka_map = load_eka_table()
@@ -118,6 +119,7 @@ def to_middleware(word):
 
     if exists:
         return json.loads(exists)
+
     return None
 
 def to_eka(word):
