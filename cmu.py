@@ -10,8 +10,8 @@ ek_map = {}
 right = []
 wrong = []
 
-def loadcmu():
-    cmu_file = open("ref/cmudict_SPHINX_40", 'rb')
+def loadcmu(file_name="ref/cmudict_SPHINX_40"):
+    cmu_file = open(file_name, 'rb')
 
     for line in cmu_file:
         words = re.split(r'\s+', line);
