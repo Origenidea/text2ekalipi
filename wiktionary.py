@@ -6,7 +6,8 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-def parse_file(csv_file = 'ref/ipa_kb.csv'):
+def load_wik_table(
+def load_eka_table(csv_file = 'ref/ipa_kb.csv'):
     csv_handle = open(csv_file, 'rb')
 
     mapper = {}
@@ -20,6 +21,14 @@ def parse_file(csv_file = 'ref/ipa_kb.csv'):
         first = False
 
     return mapper
+
+def load():
+    eka = load_eka_table()
+    pass
+
+def to_eka(word):
+    pass
+
 
 if __name__ == '__main__':
     print parse_file()
