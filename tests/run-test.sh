@@ -1,3 +1,3 @@
 #!/bin/sh
 cd ../
-cat tests/testset.nophi.txt | ./text2ekalip.py
+cat tests/testset.nophi.txt | ./main.py
