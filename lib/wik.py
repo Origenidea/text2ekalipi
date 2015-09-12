@@ -109,14 +109,19 @@ def wik_to_eka(wik):
     if 'en' in wik: lang = 'en' 
     elif 'de' in wik: lang = 'de'
     
-    source = wik[lang]
+    source = re.sub(r'[\(\)]', '', wik[lang])
 
-    print eka_map
     for letter in source:
-        res += eka_map[letter][lang]
+        if letter in eka_map:
+            res += eka_map[letter][lang]
+        else:
+            print eka_map.keys()
+            sys.stderr.write("Unable to find '%s' character for word '%s'\n" % (letter, source))
 
     return res
 
+def prepare(word):
+    return word.lower()
 
 def to_middleware(word):
     exists = r.get(word)
@@ -127,7 +132,6 @@ def to_middleware(word):
     return None
 
 def to_eka(word):
-    word = word.lower()
     wik_word = to_middleware(word)
 
     if wik_word:

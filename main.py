@@ -27,11 +27,12 @@ for line in sys.stdin:
 
     # This is the reference set
     eka_real = wordlist[1]
-    word = wordlist[0]
+    word = engine.prepare(wordlist[0])
 
     # This is our generated set
     eka_test = engine.to_eka(word)
-    engine_test = ' '.join(engine.to_middleware(word))
+    engine_test = ' '.join(engine.to_middleware(word)) if eka_test else None
+
 
     if eka_test == eka_real:
         right.append([word, engine_test, eka_real, eka_test])

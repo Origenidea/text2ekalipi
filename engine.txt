@@ -1,5 +1,10 @@
 Each engine has an interface
 
+# Loads all the tables of the engine
 engine.load()
+
+# Prepares a word to be ingested
+engine.prepare(word)
+
 engine.to_eka(english word)
 engine.to_middleware(english word) -> to the middleware system
