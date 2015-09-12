@@ -39,7 +39,7 @@ def cmu2ek(cmu):
 
     return ek
 
-def word2cmu(word):
+def to_middleware(word):
     # The CMU dict is all uppercase so we need that first
     word = word.upper()
 
@@ -49,7 +49,7 @@ def word2cmu(word):
         return word
 
 def word2ek(word):
-    cmu = word2cmu(word)
+    cmu = to_middleware(word)
     # This means that the CMU dict didn't
     # have the word to begin with
     if type(cmu) is str:
@@ -74,7 +74,7 @@ def transline(line):
         return False
 
     for word in wordlist:
-        cmu = word2cmu(word)
+        cmu = to_middleware(word)
 
         # This means that we couldn't find
         # this word in the CMU dict.

@@ -84,6 +84,7 @@ def load_wik_table():
         if ix % 10000 == 0:
             sys.stderr.write('.')
 
+
 def load_eka_table(csv_file = 'ref/ipa_kb.csv'):
     csv_handle = open(csv_file, 'rb')
 
@@ -99,6 +100,7 @@ def load_eka_table(csv_file = 'ref/ipa_kb.csv'):
 
     return mapper
 
+
 def wik_to_eka(wik):
     res = ''
 
@@ -106,7 +108,10 @@ def wik_to_eka(wik):
     elif 'de' in wik: source = wik['de']
 
     for letter in source:
-        res += 
+        res += eka_map[letter]
+
+    return res
+
 
 def to_eka(word):
     word = word.lower()
@@ -114,8 +119,10 @@ def to_eka(word):
 
     if exists:
         wik_trans = json.loads(exists)
-        wik_to_eka(wik_trans)
-    pass
+        eka_word = wik_to_eka(wik_trans)
+        return eka_word
+
+    return None
 
 
 if __name__ == '__main__':

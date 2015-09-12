@@ -1,5 +1,5 @@
 Each engine has an interface
 
-
 engine.load()
 engine.to_eka(english word)
+engine.to_middleware(english word) -> to the middleware system
