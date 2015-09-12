@@ -5,10 +5,6 @@ import sys
 import ek
 
 cmu_map = {}
-ek_map = {}
-
-right = []
-wrong = []
 
 def loadcmu(file_name="ref/cmudict_SPHINX_40"):
     cmu_file = open(file_name, 'rb')
@@ -75,42 +71,4 @@ def transline(line):
             print ''.join(ek)
 
 loadcmu()
-ek_map = ek.load()
 
-total = 0
-for line in sys.stdin:
-
-    wordlist = re.split(r'\s+', line)
-
-    # remove the empty strings
-    wordlist = filter(None, wordlist)
-
-    # If this results in a blank line,
-    # then we just loop again
-    if len(wordlist) < 2:
-        continue
-
-    # This is the reference set
-    ek_real = wordlist[1]
-
-    word = wordlist[0]
-    # This is our generated set
-    ek_test = word2ek(word)
-    cmu_test = ' '.join(word2cmu(word))
-
-    if ek_test == ek_real:
-        right.append([word, cmu_test, ek_real, ek_test])
-    else:
-        wrong.append([word, ek_real, ek_test, cmu_test])
-
-    total += 1
-
-print "Results: " + str( 100 * len(right) / total) + "% correct"
-print "Wrong List:"
-
-for line in wrong:
-    print "\t".join(line)
-
-print "\n\n\nRight List:"
-for line in right:
-    print "\t".join(line)
