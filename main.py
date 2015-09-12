@@ -3,12 +3,15 @@
 import re
 import sys
 import lib.ek as ek
+import lib.cmu as cmu
 import lib.wik as wik
+
+engine = wik
+engine.load()
 
 right = []
 wrong = []
 
-ek_map = ek.load()
 total = 0
 for line in sys.stdin:
 
@@ -23,17 +26,17 @@ for line in sys.stdin:
         continue
 
     # This is the reference set
-    ek_real = wordlist[1]
-
+    eka_real = wordlist[1]
     word = wordlist[0]
+
     # This is our generated set
-    ek_test = word2ek(word)
-    cmu_test = ' '.join(word2cmu(word))
+    eka_test = engine.to_eka(word)
+    engine_test = ' '.join(word2cmu(word))
 
     if ek_test == ek_real:
-        right.append([word, cmu_test, ek_real, ek_test])
+        right.append([word, engine_test, eka_real, eka_test])
     else:
-        wrong.append([word, ek_real, ek_test, cmu_test])
+        wrong.append([word, eka_real, eka_test, engine_test])
 
     total += 1
 

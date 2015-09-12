@@ -5,6 +5,21 @@ import sys
 import ek
 
 cmu_map = {}
+ek_map = {}
+
+def load():
+    global ek_map
+    ek_map = load_ek()
+
+def load_ek(file_name="ref/cmu_ekal.txt"):
+    ek_file = open(file_name, 'rb')
+
+    ek_map = []
+    for line in ek_file:
+        words = re.split(r'\s+', line);
+        ek_map[words[0]] = words[1]
+
+    return ek_map
 
 def loadcmu(file_name="ref/cmudict_SPHINX_40"):
     cmu_file = open(file_name, 'rb')
