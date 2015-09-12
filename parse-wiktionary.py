@@ -106,7 +106,8 @@ def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
            del elem.getparent()[0]
 
 if __name__ == '__main__':
+    my_map = {}
     for couple in parse_wik():
-        print json.dumps(couple)
+        my_map[couple[0]] = couple[1]
 
     sys.stderr.write(str(ix) + " pronunciations found out of " + str(total) + " documents in " + str((time.time() - start)) + " seconds.\n")
