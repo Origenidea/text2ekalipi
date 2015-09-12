@@ -1,0 +1,5 @@
+Each engine has an interface
+
+
+engine.load()
+engine.to_eka(english word)
