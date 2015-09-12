@@ -113,17 +113,22 @@ def wik_to_eka(wik):
     return res
 
 
-def to_eka(word):
-    word = word.lower()
+def to_middleware(word):
     exists = r.get(word)
 
     if exists:
-        wik_trans = json.loads(exists)
-        eka_word = wik_to_eka(wik_trans)
+        return json.loads(exists)
+    return None
+
+def to_eka(word):
+    word = word.lower()
+    wik_word = to_middleware(word)
+
+    if wik_word:
+        eka_word = wik_to_eka(wik_word)
         return eka_word
 
     return None
-
 
 if __name__ == '__main__':
     load_wik_table()

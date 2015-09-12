@@ -48,7 +48,7 @@ def to_middleware(word):
     else:
         return word
 
-def word2ek(word):
+def to_eka(word):
     cmu = to_middleware(word)
     # This means that the CMU dict didn't
     # have the word to begin with
@@ -84,6 +84,4 @@ def transline(line):
         else:
             ek = cmu2ek(cmu)
             print ''.join(ek)
-
-loadcmu()
 
