@@ -2,11 +2,24 @@
 # -*- coding: utf-8 -*-
 import unicodecsv as csv
 import sys
+import json
+import redis
+import wikparse as pwik
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
+r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-def load_wik_table(
+def load_wik_table():
+
+    ix = 0
+    for couple in pwik.parse_wik():
+        ix += 1
+        r.set(couple[0], json.dumps(couple[1]))
+
+        if ix % 10000 == 0:
+            sys.stderr.write('.')
+
 def load_eka_table(csv_file = 'ref/ipa_kb.csv'):
     csv_handle = open(csv_file, 'rb')
 
@@ -31,4 +44,5 @@ def to_eka(word):
 
 
 if __name__ == '__main__':
+    load_wik_table()
     print parse_file()
