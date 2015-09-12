@@ -108,6 +108,10 @@ def wik_to_eka(wik):
 
     if 'en' in wik: lang = 'en' 
     elif 'de' in wik: lang = 'de'
+    else:
+        print "Unable to find a lang."
+        print wik
+        return None
     
     source = re.sub(r'[\(\)]', '', wik[lang])
 
@@ -115,7 +119,6 @@ def wik_to_eka(wik):
         if letter in eka_map:
             res += eka_map[letter][lang]
         else:
-            print eka_map.keys()
             sys.stderr.write("Unable to find '%s' character for word '%s'\n" % (letter, source))
 
     return res
