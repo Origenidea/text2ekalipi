@@ -31,7 +31,7 @@ for line in sys.stdin:
 
     # This is our generated set
     eka_test = engine.to_eka(word)
-    engine_test = ' '.join(word2cmu(word))
+    engine_test = ' '.join(engine.to_middleware(word))
 
     if ek_test == ek_real:
         right.append([word, engine_test, eka_real, eka_test])

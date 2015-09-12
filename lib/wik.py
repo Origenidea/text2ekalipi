@@ -106,11 +106,14 @@ def load_eka_table(csv_file = 'ref/ipa_kb.csv'):
 def wik_to_eka(wik):
     res = ''
 
-    if 'en' in wik: source = wik['en']
-    elif 'de' in wik: source = wik['de']
+    if 'en' in wik: lang = 'en' 
+    elif 'de' in wik: lang = 'de'
+    
+    source = wik[lang]
 
+    print eka_map
     for letter in source:
-        res += eka_map[letter]
+        res += eka_map[letter][lang]
 
     return res
 
