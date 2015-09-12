@@ -11,6 +11,17 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
+eka_map = {}
+
+def load(do_insert=False):
+    global eka_map
+
+    if do_insert:
+        load_wik_table()
+    
+    eka_map = load_eka_table()
+
+
 def parse_wik(file_name='./ref/enwiktionary.xml', lang_list=[]):
     lang_set = set(lang_list)
     
@@ -68,7 +79,7 @@ def load_wik_table():
     ix = 0
     for couple in parse_wik():
         ix += 1
-        r.set(couple[0], json.dumps(couple[1]))
+        r.set(couple[0].lower(), json.dumps(couple[1]))
 
         if ix % 10000 == 0:
             sys.stderr.write('.')
@@ -88,11 +99,22 @@ def load_eka_table(csv_file = 'ref/ipa_kb.csv'):
 
     return mapper
 
-def load():
-    eka = load_eka_table()
-    pass
+def wik_to_eka(wik):
+    res = ''
+
+    if 'en' in wik: source = wik['en']
+    elif 'de' in wik: source = wik['de']
+
+    for letter in source:
+        res += 
 
 def to_eka(word):
+    word = word.lower()
+    exists = r.get(word)
+
+    if exists:
+        wik_trans = json.loads(exists)
+        wik_to_eka(wik_trans)
     pass
 
 
