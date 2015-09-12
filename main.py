@@ -33,7 +33,7 @@ for line in sys.stdin:
     eka_test = engine.to_eka(word)
     engine_test = ' '.join(engine.to_middleware(word))
 
-    if ek_test == ek_real:
+    if eka_test == eka_real:
         right.append([word, engine_test, eka_real, eka_test])
     else:
         wrong.append([word, eka_real, eka_test, engine_test])
