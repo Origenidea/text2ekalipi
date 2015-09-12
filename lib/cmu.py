@@ -10,6 +10,7 @@ ek_map = {}
 def load():
     global ek_map
     ek_map = load_ek()
+    loadcmu()
 
 def load_ek(file_name="ref/cmu_ekal.txt"):
     ek_file = open(file_name, 'rb')
