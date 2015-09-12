@@ -103,14 +103,13 @@ def load_eka_table(csv_file = 'ref/ipa_kb.csv'):
     return mapper
 
 
-def wik_to_eka(wik):
+def wik_to_eka(wik, source_word=None):
     res = ''
 
-    if 'en' in wik: lang = 'en' 
-    elif 'de' in wik: lang = 'de'
+    if 'de' in wik: lang = 'de'
+    elif 'en' in wik: lang = 'en' 
     else:
-        print "Unable to find a lang."
-        print wik
+        print "Unable to find lang for %s." % (source_word, ), wik
         return None
     
     source = re.sub(r'[\(\)]', '', wik[lang])
@@ -119,7 +118,7 @@ def wik_to_eka(wik):
         if letter in eka_map:
             res += eka_map[letter][lang]
         else:
-            sys.stderr.write("Unable to find '%s' character for word '%s'\n" % (letter, source))
+            print "Unable to find '%s' character for word '%s' (%s)" % (letter, source, source_word)
 
     return res
 
@@ -138,7 +137,7 @@ def to_eka(word):
     wik_word = to_middleware(word)
 
     if wik_word:
-        eka_word = wik_to_eka(wik_word)
+        eka_word = wik_to_eka(wik_word, source_word=word)
         return eka_word
 
     return None
