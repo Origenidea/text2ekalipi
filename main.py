@@ -7,7 +7,7 @@ import lib.cmu as cmu
 import lib.wik as wik
 
 engine = wik
-engine.load()
+engine.load(do_insert=True)
 
 right = []
 wrong = []

@@ -5,6 +5,7 @@ This is an english text to [ekalipi](www.ekalipi.org) translator using the a num
 The two here are wikitionary (en, de) and the CMU Sphinx. There's a file engine.txt which outlines how the files in the lib/ directory
 are structured
 
+The wiktionary system uses redis because the database is a giant xml file that takes a long time to parse
 
 ### old stuff
 There's also experiments with the [wiktionary ipa](https://dumps.wikimedia.org/enwiktionary) which which expanded to 3.5GB.  Because of that, it's not included in the repository and can be grabbed and set up using `ref/grab-wiktionary.sh`.

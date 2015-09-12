@@ -3,6 +3,7 @@
 import lxml.etree as etree
 import operator
 import unicodecsv as csv
+import re
 import sys
 import json
 import redis
