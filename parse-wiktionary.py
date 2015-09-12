@@ -16,7 +16,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
-    lang_set = Set(lang_list)
+    lang_set = set(lang_list)
     
     # This is the pronounciation regex
     pr_re_english = re.compile(r'{IPA\s*\|\s*-?.?([^|\/\]]+).+lang=\s*(en)')
@@ -56,18 +56,18 @@ def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
 
             if len(res) == 0:
                 res = pr_re_reversed.findall(elem.text)
+                res = [(t[1], t[0]) for t in res]
 
+            if len(res) > 0: 
                 # If the language support list is set, then we
                 # only have results that are within the supported
                 # language set
                 if len(lang_set) > 0:
                     res = filter(lambda t: t[1] in lang_set, res)
 
-                res = [(t[1], t[0]) for t in res]
-
-            if len(res) > 0: 
-
+            if len(res) > 0:
                 p_total += len(res)
+                res = {t[1]: t[0] for t in res}
                 # This is a word match, keep track of it.
                 ix += 1
                 """
@@ -78,7 +78,6 @@ def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
                     sort_count = filter(lambda x: x[1] > (ix / 30), sort_count)
                     sort_count = map(lambda x: [x[0], "{0:.2f}".format(100.0 * x[1] / ix)], sort_count)
                     sys.stderr.write(json.dumps(list(reversed(sort_count))) + "\n")
-                """
 
                 seen = {}
                 for t in res:
@@ -92,6 +91,7 @@ def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
                        seen[lang] = 1
                        count[lang] += 1
 
+                """
                 yield [title, res]
             
             # This debugging provides for checking if a regex is off
