@@ -11,7 +11,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
+def parse_wik(file_name='./ref/enwiktionary.xml', lang_list=[]):
     lang_set = set(lang_list)
     
     # This is the pronounciation regex
@@ -65,7 +65,6 @@ def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
            del elem.getparent()[0]
 
 def load_wik_table():
-
     ix = 0
     for couple in parse_wik():
         ix += 1
