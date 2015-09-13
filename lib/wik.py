@@ -18,7 +18,7 @@ def load(do_insert=False):
     global eka_map
 
     if do_insert:
-        print "Loading wiki into redis. Wait a few hours..."
+        print "Loading wiki into redis. Wait about 5 minutes..."
         r.flushdb()
         load_wik_table()
         print "Ok Done."
@@ -56,7 +56,7 @@ def parse_wik(file_name='./ref/enwiktionary.xml', lang_list=[]):
         # reading
         elif elem.tag == '{http://www.mediawiki.org/xml/export-0.10/}text' and flag and elem.text:
             text = re.sub(r'enPR', 'en', elem.text)
-            #print "QQ",title,"QQ"#, text
+            #print "QQ",title,"QQ", text
 
             res = pr_re_english.findall(text)
 
@@ -127,11 +127,23 @@ def wik_to_eka(wik, source_word=None):
     
     source = re.sub(r'[\(\)]', '', wik[lang])
 
-    for letter in source:
+    last_char = u''
+
+    for letter in source.strip():
         if letter in eka_map:
             res += eka_map[letter][lang]
         else:
-            print "Unable to find '%s' character for word '%s' (%s)" % (letter, source, source_word)
+            combined = last_char + letter
+
+            if combined in eka_map:
+                res += eka_map[combined][lang]
+
+            else:
+                #for key in sorted(eka_map.keys()):
+                #    sys.stdout.write("%s " % key)
+                print "(%s|%s)(%s|%s)" % (letter, combined, source, source_word)
+
+        last_char = letter
 
     return res
 
