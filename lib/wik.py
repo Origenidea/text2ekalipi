@@ -92,12 +92,16 @@ def parse_wik(file_name='./ref/enwiktionary.xml', lang_list=[]):
 
 def load_wik_table():
     ix = 0
-    for couple in parse_wik():
+    row = 0
+    for couple in parse_wik(lang_list=['de','en']):
         ix += 1
         r.set(couple[0].lower(), json.dumps(couple[1]))
 
         if ix % 1000 == 0:
             sys.stderr.write('.')
+            row += 1
+            if row % 25 == 0:
+                sys.stderr.write(' %d\n' % row)
 
 
 def load_eka_table(csv_file = 'ref/ipa_kb.csv'):
