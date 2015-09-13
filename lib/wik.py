@@ -19,6 +19,7 @@ def load(do_insert=False):
 
     if do_insert:
         print "Loading wiki into redis. Wait a few hours..."
+        r.flushdb()
         load_wik_table()
         print "Ok Done."
         sys.exit(0)
@@ -31,6 +32,7 @@ def parse_wik(file_name='./ref/enwiktionary.xml', lang_list=[]):
     
     # This is the pronounciation regex
     pr_re_english = re.compile(r'{IPA\s*\|\s*-?.?([^|\/\]]+).+lang=\s*(en)')
+    pr_re_short = re.compile(r'{{a\|U.}} {{(en)\|([^}]*)}}')
     pr_re = re.compile(r'{IPA\s*\|\s*-?.?([^|\/\]]+).+lang=\s*([\-\w]+)')
 
     # A number of words have this thing reversed -- "anyone can edit" ...
@@ -54,8 +56,15 @@ def parse_wik(file_name='./ref/enwiktionary.xml', lang_list=[]):
         # reading
         elif elem.tag == '{http://www.mediawiki.org/xml/export-0.10/}text' and flag and elem.text:
             text = re.sub(r'enPR', 'en', elem.text)
+            #print "QQ",title,"QQ"#, text
 
             res = pr_re_english.findall(text)
+
+            if len(res) == 0:
+                res = pr_re_short.findall(text)
+                # need to reverse the mapping
+                res = [(t[1], t[0]) for t in res]
+                #print "ZZ",res,"ZZ"
 
             if len(res) == 0:
                 res = pr_re.findall(text)
@@ -87,7 +96,7 @@ def load_wik_table():
         ix += 1
         r.set(couple[0].lower(), json.dumps(couple[1]))
 
-        if ix % 10000 == 0:
+        if ix % 1000 == 0:
             sys.stderr.write('.')
 
 
