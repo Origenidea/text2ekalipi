@@ -2,12 +2,14 @@
 
 This is an english text to [ekalipi](www.ekalipi.org) translator using the a number of different engines which have different data sources.
 
-The two here are wikitionary (en, de) and the CMU Sphinx. There's a file engine.txt which outlines how the files in the lib/ directory
+The two here are wikitionary (en, de) and the CMU Sphinx. 
 are structured
 
 The wiktionary system uses redis because the database is a giant xml file that takes a long time to parse
 
-## Engine api
+Each engine should follow the interface outlined below, in order to be interchangable.
+
+## Engine API interface
 
 All engines have a number of functions defined:
 
