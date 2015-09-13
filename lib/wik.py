@@ -20,6 +20,8 @@ def load(do_insert=False):
     if do_insert:
         print "Loading wiki into redis. Wait a few hours..."
         load_wik_table()
+        print "Ok Done."
+        sys.exit(0)
     
     eka_map = load_eka_table()
 
@@ -51,13 +53,15 @@ def parse_wik(file_name='./ref/enwiktionary.xml', lang_list=[]):
         # it here because we have guarantees on its serialized
         # reading
         elif elem.tag == '{http://www.mediawiki.org/xml/export-0.10/}text' and flag and elem.text:
-            res = pr_re_english.findall(elem.text)
+            text = re.sub(r'enPR', 'en', elem.text)
+
+            res = pr_re_english.findall(text)
 
             if len(res) == 0:
-                res = pr_re.findall(elem.text)
+                res = pr_re.findall(text)
 
             if len(res) == 0:
-                res = pr_re_reversed.findall(elem.text)
+                res = pr_re_reversed.findall(text)
                 res = [(t[1], t[0]) for t in res]
 
             if len(res) > 0: 
