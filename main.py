@@ -1,13 +1,18 @@
 #!/usr/bin/python -OO
 # -*- coding: utf-8 -*-
+import argparse
 import re
 import sys
 import lib.ek as ek
 import lib.cmu as cmu
 import lib.wik as wik
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-r', '--rebuild', action='store_true', help='rebuild databases')
+args = parser.parse_args()
+
 engine = wik
-engine.load(do_insert=True)
+engine.load(do_insert=args.rebuild)
 
 right = []
 wrong = []
