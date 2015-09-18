@@ -1,2 +1,5 @@
 dump.rdb
 *.pyo
+ref/enwiktionary-latest-pages-articles.xml.bz2
+ref/enwiktionary-latest-pages-articles.xml
+ref/enwiktionary.xml

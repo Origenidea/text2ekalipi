@@ -3,6 +3,7 @@
 import lxml.etree as etree
 import operator
 import unicodecsv as csv
+import re
 import sys
 import json
 import redis
@@ -11,11 +12,27 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
+eka_map = {}
+
+def load(do_insert=False):
+    global eka_map
+
+    if do_insert:
+        print "Loading wiki into redis. Wait about 5 minutes..."
+        r.flushdb()
+        load_wik_table()
+        print "Ok Done."
+        sys.exit(0)
+    
+    eka_map = load_eka_table()
+
+
+def parse_wik(file_name='./ref/enwiktionary.xml', lang_list=[]):
     lang_set = set(lang_list)
     
     # This is the pronounciation regex
     pr_re_english = re.compile(r'{IPA\s*\|\s*-?.?([^|\/\]]+).+lang=\s*(en)')
+    pr_re_short = re.compile(r'{{a\|U.}} {{(en)\|([^}]*)}}')
     pr_re = re.compile(r'{IPA\s*\|\s*-?.?([^|\/\]]+).+lang=\s*([\-\w]+)')
 
     # A number of words have this thing reversed -- "anyone can edit" ...
@@ -38,13 +55,22 @@ def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
         # it here because we have guarantees on its serialized
         # reading
         elif elem.tag == '{http://www.mediawiki.org/xml/export-0.10/}text' and flag and elem.text:
-            res = pr_re_english.findall(elem.text)
+            text = re.sub(r'enPR', 'en', elem.text)
+            #print "QQ",title,"QQ", text
+
+            res = pr_re_english.findall(text)
 
             if len(res) == 0:
-                res = pr_re.findall(elem.text)
+                res = pr_re_short.findall(text)
+                # need to reverse the mapping
+                res = [(t[1], t[0]) for t in res]
+                #print "ZZ",res,"ZZ"
 
             if len(res) == 0:
-                res = pr_re_reversed.findall(elem.text)
+                res = pr_re.findall(text)
+
+            if len(res) == 0:
+                res = pr_re_reversed.findall(text)
                 res = [(t[1], t[0]) for t in res]
 
             if len(res) > 0: 
@@ -66,12 +92,17 @@ def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
 
 def load_wik_table():
     ix = 0
-    for couple in parse_wik():
+    row = 0
+    for couple in parse_wik(lang_list=['de','en']):
         ix += 1
-        r.set(couple[0], json.dumps(couple[1]))
+        r.set(couple[0].lower(), json.dumps(couple[1]))
 
-        if ix % 10000 == 0:
+        if ix % 1000 == 0:
             sys.stderr.write('.')
+            row += 1
+            if row % 25 == 0:
+                sys.stderr.write(' %d\n' % row)
+
 
 def load_eka_table(csv_file='ref/ipa_kb.csv'):
     csv_handle = open(csv_file, 'rb')
@@ -88,13 +119,57 @@ def load_eka_table(csv_file='ref/ipa_kb.csv'):
 
     return mapper
 
-def load():
-    eka = load_eka_table()
-    pass
+
+def wik_to_eka(wik, source_word=None):
+    res = ''
+
+    if 'de' in wik: lang = 'de'
+    elif 'en' in wik: lang = 'en' 
+    else:
+        print "Unable to find lang for %s." % (source_word, ), wik
+        return None
+    
+    source = re.sub(r'[\(\)]', '', wik[lang])
+
+    last_char = u''
+
+    for letter in source.strip():
+        if letter in eka_map:
+            res += eka_map[letter][lang]
+        else:
+            combined = last_char + letter
+
+            if combined in eka_map:
+                res += eka_map[combined][lang]
+
+            else:
+                #for key in sorted(eka_map.keys()):
+                #    sys.stdout.write("%s " % key)
+                print "(%s|%s)(%s|%s)" % (letter, combined, source, source_word)
+
+        last_char = letter
+
+    return res
+
+def prepare(word):
+    return word.lower()
+
+def to_middleware(word):
+    exists = r.get(word)
+
+    if exists:
+        return json.loads(exists)
+
+    return None
 
 def to_eka(word):
-    pass
+    wik_word = to_middleware(word)
 
+    if wik_word:
+        eka_word = wik_to_eka(wik_word, source_word=word)
+        return eka_word
+
+    return None
 
 if __name__ == '__main__':
     load_wik_table()

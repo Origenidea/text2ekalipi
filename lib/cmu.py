@@ -7,8 +7,20 @@ import ek
 cmu_map = {}
 ek_map = {}
 
-right = []
-wrong = []
+def load():
+    global ek_map
+    ek_map = load_ek()
+    loadcmu()
+
+def load_ek(file_name="ref/cmu_ekal.txt"):
+    ek_file = open(file_name, 'rb')
+
+    ek_map = []
+    for line in ek_file:
+        words = re.split(r'\s+', line);
+        ek_map[words[0]] = words[1]
+
+    return ek_map
 
 def loadcmu(file_name="ref/cmudict_SPHINX_40"):
     cmu_file = open(file_name, 'rb')
@@ -28,7 +40,7 @@ def cmu2ek(cmu):
 
     return ek
 
-def word2cmu(word):
+def to_middleware(word):
     # The CMU dict is all uppercase so we need that first
     word = word.upper()
 
@@ -37,8 +49,8 @@ def word2cmu(word):
     else:
         return word
 
-def word2ek(word):
-    cmu = word2cmu(word)
+def to_eka(word):
+    cmu = to_middleware(word)
     # This means that the CMU dict didn't
     # have the word to begin with
     if type(cmu) is str:
@@ -63,7 +75,7 @@ def transline(line):
         return False
 
     for word in wordlist:
-        cmu = word2cmu(word)
+        cmu = to_middleware(word)
 
         # This means that we couldn't find
         # this word in the CMU dict.
@@ -74,43 +86,3 @@ def transline(line):
             ek = cmu2ek(cmu)
             print ''.join(ek)
 
-loadcmu()
-ek_map = ek.load()
-
-total = 0
-for line in sys.stdin:
-
-    wordlist = re.split(r'\s+', line)
-
-    # remove the empty strings
-    wordlist = filter(None, wordlist)
-
-    # If this results in a blank line,
-    # then we just loop again
-    if len(wordlist) < 2:
-        continue
-
-    # This is the reference set
-    ek_real = wordlist[1]
-
-    word = wordlist[0]
-    # This is our generated set
-    ek_test = word2ek(word)
-    cmu_test = ' '.join(word2cmu(word))
-
-    if ek_test == ek_real:
-        right.append([word, cmu_test, ek_real, ek_test])
-    else:
-        wrong.append([word, ek_real, ek_test, cmu_test])
-
-    total += 1
-
-print "Results: " + str( 100 * len(right) / total) + "% correct"
-print "Wrong List:"
-
-for line in wrong:
-    print "\t".join(line)
-
-print "\n\n\nRight List:"
-for line in right:
-    print "\t".join(line)
