@@ -65,7 +65,6 @@ def parse_wik(file_name='./ref/enwiktionary.xml',lang_list=[]):
            del elem.getparent()[0]
 
 def load_wik_table():
-
     ix = 0
     for couple in parse_wik():
         ix += 1
@@ -74,7 +73,7 @@ def load_wik_table():
         if ix % 10000 == 0:
             sys.stderr.write('.')
 
-def load_eka_table(csv_file = 'ref/ipa_kb.csv'):
+def load_eka_table(csv_file='ref/ipa_kb.csv'):
     csv_handle = open(csv_file, 'rb')
 
     mapper = {}
