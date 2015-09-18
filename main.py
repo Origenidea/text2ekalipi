@@ -36,13 +36,13 @@ for line in sys.stdin:
 
     # This is our generated set
     eka_test = engine.to_eka(word)
-    engine_test = ' '.join(engine.to_middleware(word)) if eka_test else ''
+    engine_test = engine.to_middleware(word) if eka_test else ''
 
     if eka_test == eka_real:
-        right.append([word, engine_test, eka_real, eka_test])
+        right.append([word, eka_real, eka_test, 'engine: (%s)' % engine_test])
     else:
         if not eka_test: eka_test = ''
-        wrong.append([word, eka_real, eka_test, engine_test])
+        wrong.append([word, eka_real, eka_test, 'engine: (%s)' % engine_test])
 
     total += 1
 
