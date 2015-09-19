@@ -14,8 +14,8 @@ args = parser.parse_args()
 engine = wik
 engine.load(do_insert=args.rebuild)
 
-right = []
-wrong = []
+right = [['English', 'IPA', 'machine', 'human']]
+wrong = [['English', 'IPA', 'machine', 'human']]
 
 total = 0
 for line in sys.stdin:
@@ -46,7 +46,7 @@ for line in sys.stdin:
 
     total += 1
 
-print "Results: " + str( 100 * len(right) / total) + "% correct"
+print "\n\nResults: " + str( 100 * len(right) / total) + "% correct\n\n"
 print "Wrong List:"
 
 for line in wrong:
