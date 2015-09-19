@@ -36,13 +36,13 @@ for line in sys.stdin:
 
     # This is our generated set
     eka_test = engine.to_eka(word)
-    engine_test = engine.to_middleware(word) if eka_test else ''
+    engine_test = engine.to_middleware(word).values()[0] if eka_test else ''
 
     if eka_test == eka_real:
-        right.append([word, eka_real, eka_test, 'engine: (%s)' % engine_test])
+        right.append([word, engine_test, eka_real, eka_test])
     else:
         if not eka_test: eka_test = ''
-        wrong.append([word, eka_real, eka_test, 'engine: (%s)' % engine_test])
+        wrong.append([word, engine_test, eka_real, eka_test])
 
     total += 1
 
@@ -50,8 +50,8 @@ print "Results: " + str( 100 * len(right) / total) + "% correct"
 print "Wrong List:"
 
 for line in wrong:
-    print "\t".join(line)
+    print ''.join(['{:20}'.format(x) for x in line])
 
 print "\n\n\nRight List:"
 for line in right:
-    print "\t".join(line)
+    print ''.join(['{:20}'.format(x) for x in line])
