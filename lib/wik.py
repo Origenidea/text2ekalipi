@@ -143,9 +143,10 @@ def wik_to_eka(wik, source_word=None):
                 res += eka_map[combined][lang]
 
             else:
+                pass
                 #for key in sorted(eka_map.keys()):
                 #    sys.stdout.write("%s " % key)
-                print "(%s|%s)(%s|%s)" % (letter, combined, source, source_word)
+                #print "(%s|%s)(%s|%s)" % (letter, combined, source, source_word)
 
         last_char = letter
 
