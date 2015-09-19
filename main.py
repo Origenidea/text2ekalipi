@@ -14,8 +14,11 @@ args = parser.parse_args()
 engine = wik
 engine.load(do_insert=args.rebuild)
 
+line = ['--------'] * 4
 right = [['English', 'IPA', 'machine', 'human']]
 wrong = [['English', 'IPA', 'machine', 'human']]
+right.apppend(line)
+wrogn.append(line)
 
 total = 0
 for line in sys.stdin:
